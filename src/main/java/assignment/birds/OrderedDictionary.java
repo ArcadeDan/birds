@@ -56,6 +56,33 @@ public class OrderedDictionary implements OrderedDictionaryADT {
     @Override
     public void insert(BirdRecord r) throws DictionaryException {
         // Write this method
+        Node current_node = this.root;
+        Node prev_node = current_node;
+
+        if (!root.isEmpty()) {
+            while (!current_node.isEmpty()) {
+                if (current_node.getLeftChild() == null) {
+                    prev_node = current_node;
+                    current_node = current_node.getLeftChild();
+                    break;
+
+                } else {
+                    current_node = current_node.getLeftChild();
+                }
+            }
+            System.out.println("depth");
+            current_node = new Node(r, null, null);
+            current_node.setParent(prev_node);
+            prev_node.setLeftChild(current_node);
+
+
+
+
+        } else {
+          this.root.setData(r);
+        }
+
+
     }
 
     /**
