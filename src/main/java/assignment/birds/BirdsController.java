@@ -153,13 +153,14 @@ public class BirdsController implements Initializable {
         }
     }
 
-    public void first() {
-        // Write this method
-
+    public void first() throws DictionaryException {
+        bird = this.database.smallest();
+        showBird();
     }
 
-    public void last() {
-        // Write this method
+    public void last() throws DictionaryException {
+        this.bird = database.largest();
+        showBird();
     }
 
     public void next() throws DictionaryException {
@@ -190,7 +191,7 @@ public class BirdsController implements Initializable {
         }
     }
 
-    public void loadDictionary() {
+    public void loadDictionary() throws DictionaryException {
         Scanner input;
         int line = 0;
         try {
