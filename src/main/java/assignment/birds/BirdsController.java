@@ -162,12 +162,15 @@ public class BirdsController implements Initializable {
         // Write this method
     }
 
-    public void next() {
-        // Write this method;
+    public void next() throws DictionaryException {
+        this.bird = database.successor(bird.getDataKey());
+        showBird();
     }
 
-    public void previous() {
+    public void previous() throws DictionaryException {
         // Write this method
+        this.bird = database.predecessor(bird.getDataKey());
+        showBird();
     }
 
     public void play() {

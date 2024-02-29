@@ -58,26 +58,36 @@ public class OrderedDictionary implements OrderedDictionaryADT {
         // Write this method
         Node current_node = this.root;
         Node prev_node = current_node;
+        int choice = 0;
 
         if (!root.isEmpty()) {
-            while (!current_node.isEmpty()) {
-                if (current_node.getLeftChild() == null) {
+            while (current_node != null) {
+                // left
+                if (r.getDataKey().compareTo(current_node.getData().getDataKey()) == -1) {
+                    choice = -1;
                     prev_node = current_node;
                     current_node = current_node.getLeftChild();
-                    break;
 
+                    // right
+                } else if (r.getDataKey().compareTo(current_node.getData().getDataKey()) == 1) {
+                    choice = 1;
+                    prev_node = current_node;
+                    current_node = current_node.getRightChild();
                 } else {
-                    current_node = current_node.getLeftChild();
+                    throw new DictionaryException("Identical Key detected");
                 }
+
             }
             System.out.println("depth");
             current_node = new Node(r, null, null);
+
+            // adjust parents and children
+            if (choice == -1) {
+                prev_node.setLeftChild(current_node);
+            } else if (choice == 1) {
+                prev_node.setRightChild(current_node);
+            }
             current_node.setParent(prev_node);
-            prev_node.setLeftChild(current_node);
-
-
-
-
         } else {
           this.root.setData(r);
         }
@@ -108,8 +118,8 @@ public class OrderedDictionary implements OrderedDictionaryADT {
      */
     @Override
     public BirdRecord successor(DataKey k) throws DictionaryException{
-        // Write this method
-        return null; // change this statement
+
+
     }
 
    
@@ -124,9 +134,9 @@ public class OrderedDictionary implements OrderedDictionaryADT {
      */
     @Override
     public BirdRecord predecessor(DataKey k) throws DictionaryException{
-        // Write this method
-        return null; // change this statement
+        
     }
+
 
     /**
      * Returns the record with smallest key in the ordered dictionary. Returns
