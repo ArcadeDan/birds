@@ -118,7 +118,31 @@ public class OrderedDictionary implements OrderedDictionaryADT {
      */
     @Override
     public BirdRecord successor(DataKey k) throws DictionaryException{
+        Node current = root;
+        int comparison;
+        if (root.isEmpty()) {
+            throw new DictionaryException("There is no record matches the given key");
+        }
 
+        while (true) {
+            comparison = current.getData().getDataKey().compareTo(k);
+            if (comparison == 0) { // key found
+                return current.getRightChild().getData();
+            }
+            if (comparison == 1) {
+                if (current.getLeftChild() == null) {
+                    // Key not found
+                    throw new DictionaryException("There is no record matches the given key");
+                }
+                current = current.getLeftChild();
+            } else if (comparison == -1) {
+                if (current.getRightChild() == null) {
+                    // Key not found
+                    throw new DictionaryException("There is no record matches the given key");
+                }
+                current = current.getRightChild();
+            }
+        }
 
     }
 
@@ -134,7 +158,32 @@ public class OrderedDictionary implements OrderedDictionaryADT {
      */
     @Override
     public BirdRecord predecessor(DataKey k) throws DictionaryException{
-        
+        Node current = root;
+        int comparison;
+        if (root.isEmpty()) {
+            throw new DictionaryException("There is no record matches the given key");
+        }
+
+        while (true) {
+            comparison = current.getData().getDataKey().compareTo(k);
+            if (comparison == 0) { // key found
+                return current.getParent().getData();
+            }
+            if (comparison == 1) {
+                if (current.getLeftChild() == null) {
+                    // Key not found
+                    throw new DictionaryException("There is no record matches the given key");
+                }
+                current = current.getLeftChild();
+            } else if (comparison == -1) {
+                if (current.getRightChild() == null) {
+                    // Key not found
+                    throw new DictionaryException("There is no record matches the given key");
+                }
+                current = current.getRightChild();
+            }
+        }
+
     }
 
 
