@@ -74,13 +74,13 @@ public class BirdsController implements Initializable {
         try {
             previousBird = database.predecessor(bird.getDataKey());
         } catch (DictionaryException ex) {
-
+            System.out.println("no predecessor found");
         }
         BirdRecord nextBird = null;
         try {
             nextBird = database.successor(bird.getDataKey());
         } catch (DictionaryException ex) {
-
+            System.out.println("no successor found");
         }
         DataKey key = bird.getDataKey();
         try {

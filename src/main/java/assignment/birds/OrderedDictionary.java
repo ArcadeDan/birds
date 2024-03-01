@@ -143,6 +143,43 @@ public class OrderedDictionary implements OrderedDictionaryADT {
         child = null;
 
         char parent_orientation = '0'; // Special case: k node is the Root
+
+
+        if (current.isLeaf())
+        {
+            if(current.getParent().getData().getDataKey().compareTo(k) >= 0 ) //current is a right child
+            {
+                current.getParent().setRightChild(null);
+            }
+            else {  //if its not a right child, it must be a left child, so remove the left child
+                current.getParent().setLeftChild(null);
+            }
+        } else if (current.hasLeftChild() == true && current.hasRightChild() == false)//case 1-L node has 1 child, and is a left
+        {
+            if(current.getParent().getData().getDataKey().compareTo(k) >= 0 ) //current is a right child
+            {
+                current.getParent().setRightChild(current.getLeftChild());
+            }
+            else//current is a left child
+            {
+                //if its not a right child, it must be a left child, so make the left child of current, the
+                current.getParent().setLeftChild(current.getLeftChild());
+            }
+        }
+        else if (current.hasLeftChild() == false && current.hasRightChild() == true) {//case 1-R node has 1 child, and it is a right child
+            if(current.getParent().getData().getDataKey().compareTo(k) >= 0 ) //current is a right child
+            {
+                current.getParent().setRightChild(current.getRightChild());
+            }
+            else//current is a left child
+            {
+                //if its not a right child, it must be a left child, so make the left child of current, the
+                current.getParent().setLeftChild(current.getRightChild());
+            }
+
+        }
+
+
         if (current.hasParent()){
             if (parent.hasLeftChild()){
                 if (parent.getLeftChild().getData().getDataKey().compareTo(k) == 0) parent_orientation = 'L';
@@ -232,34 +269,39 @@ public class OrderedDictionary implements OrderedDictionaryADT {
     public BirdRecord successor(DataKey k) throws DictionaryException{
         Node current;
         DataKey LastKey;
-        current=findNode(k); //find node gets the node at key
-        if( current.hasRightChild() ) //if that node has a right child that exists
-        {
-            current=current.getRightChild(); //go right once
-            while(current.hasLeftChild()) { //go left til there is no more left
-                current=current.getLeftChild();
-            }
-            return current.getData(); //this is the successor, return the data
+        try {
 
-        }
-        else if(current.getParent().getData().getDataKey().compareTo(k) >= 0) //if the node has no right child determine if itself is a R or L child
-        { //if in here, this means that current is a left child, so its successor is its parent
-            return current.getParent().getData();
-        }
-        else if(current.getParent().getData().getDataKey().compareTo(k) <= 0)//if not then current is a right child
-        {//since its a right child, go up to its parent, go back up the parents, the first node that is a right child, is the successor
 
-            LastKey=current.getData().getDataKey();
-            current=current.getParent();//go up one parent
-            while(current.getData().getDataKey().compareTo(LastKey) <= 0) //while the next node is a right child
+            current = findNode(k); //find node gets the node at key
+            if (current.hasRightChild()) //if that node has a right child that exists
             {
-                LastKey=current.getData().getDataKey();
-                current=current.getParent();
+                current = current.getRightChild(); //go right once
+                while (current.hasLeftChild()) { //go left til there is no more left
+                    current = current.getLeftChild();
+                }
+                return current.getData(); //this is the successor, return the data
 
-            } //when we exit the while loop, it means that we have found a node, who is a left child, meaning its parent is its successor
-            return current.getData();
+            } else if (current.getParent().getData().getDataKey().compareTo(k) >= 0) //if the node has no right child determine if itself is a R or L child
+            { //if in here, this means that current is a left child, so its successor is its parent
+                return current.getParent().getData();
+            } else if (current.getParent().getData().getDataKey().compareTo(k) <= 0)//if not then current is a right child
+            {//since its a right child, go up to its parent, go back up the parents, the first node that is a right child, is the successor
+
+                LastKey = current.getData().getDataKey();
+                current = current.getParent();//go up one parent
+                while (current.getData().getDataKey().compareTo(LastKey) <= 0) //while the next node is a right child
+                {
+                    LastKey = current.getData().getDataKey();
+                    current = current.getParent();
+
+                } //when we exit the while loop, it means that we have found a node, who is a left child, meaning its parent is its successor
+                return current.getData();
+            } else {
+                throw new DictionaryException("No other successor");
+            } //if we get here, it means there was no successor,
+        } catch (Exception e) {
+            throw new DictionaryException("no successor");
         }
-        else{throw new DictionaryException("No other successor");} //if we get here, it means there was no successor,
     }
 
    
@@ -276,37 +318,43 @@ public class OrderedDictionary implements OrderedDictionaryADT {
     public BirdRecord predecessor(DataKey k) throws DictionaryException{
         Node current;
         DataKey LastKey;
-        current=findNode(k); //find node gets the node at key
-        if( current.hasLeftChild() ) //if that node has a Left child that exists
-        {
-            current=current.getLeftChild(); //go Left once
-            while(current.hasRightChild()) { //go right til there is no more right
-                current=current.getRightChild();
-            }
-            return current.getData(); //this is the predacessor, return the data
+        try {
 
-        }
-        else if( current.getParent().getData().getDataKey().compareTo(k) <= 0) //if the node has no left child determine if itself is a R or L child
-        { //if in here, this means that current is a right child, so its predacessor is its parent
-            return current.getParent().getData();
-        }
-        else if(current.getParent().getData().getDataKey().compareTo(k) >= 0)//if not then current is a left child
-        {//since its a left child, go up to its parent, go back up the parents, the first node that is a left child, is the predacessor
 
-            LastKey=current.getData().getDataKey();
-            current=current.getParent();//go up one parent
-            while(current.getData().getDataKey().compareTo(LastKey) >= 0) //while the next node is a right child
+            current = findNode(k); //find node gets the node at key
+            if (current.hasLeftChild()) //if that node has a Left child that exists
             {
-                LastKey=current.getData().getDataKey();
-                current=current.getParent();
+                current = current.getLeftChild(); //go Left once
+                while (current.hasRightChild()) { //go right til there is no more right
+                    current = current.getRightChild();
+                }
+                return current.getData(); //this is the predacessor, return the data
 
-            } //when we exit the while loop, it means that we have found a node, who is a left child, meaning its parent is its predacessor
-            return current.getData();
+            } else if (current.getParent().getData().getDataKey().compareTo(k) <= 0) //if the node has no left child determine if itself is a R or L child
+            { //if in here, this means that current is a right child, so its predacessor is its parent
+                return current.getParent().getData();
+            } else if (current.getParent().getData().getDataKey().compareTo(k) >= 0)//if not then current is a left child
+            {//since its a left child, go up to its parent, go back up the parents, the first node that is a left child, is the predacessor
+
+                LastKey = current.getData().getDataKey();
+                current = current.getParent();//go up one parent
+                while (current.getData().getDataKey().compareTo(LastKey) >= 0) //while the next node is a right child
+                {
+                    LastKey = current.getData().getDataKey();
+                    current = current.getParent();
+
+                } //when we exit the while loop, it means that we have found a node, who is a left child, meaning its parent is its predacessor
+                return current.getData();
 
 
+            } else {
+                throw new DictionaryException("No other predacessor");
+            } //if we get here, it means there was no successor,
+        } catch (Exception e) {
+            throw (new DictionaryException("No predecessor found"));
         }
-        else{throw new DictionaryException("No other predacessor");} //if we get here, it means there was no successor,
     }
+
 
 
     /**

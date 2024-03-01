@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 /**
  *
- * @author Ouda
+ * @author Ouda, Patrick Gardner, Bach Nguyen, Daniel Sparks
  */
 public class Birds extends Application {
 
