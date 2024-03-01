@@ -134,6 +134,89 @@ public class OrderedDictionary implements OrderedDictionaryADT {
     @Override
     public void remove(DataKey k) throws DictionaryException {
         // Write this method
+        Node current, parent, child, successor;
+        current = findNode(k);
+        if (current == null) throw new DictionaryException("Node not found for DataKey");
+
+        //* 1: Determine the k node's orientation from Parent *//
+        parent = current.getParent();
+        child = null;
+
+        char parent_orientation = '0'; // Special case: k node is the Root
+        if (current.hasParent()){
+            if (parent.hasLeftChild()){
+                if (parent.getLeftChild().getData().getDataKey().compareTo(k) == 0) parent_orientation = 'L';
+            }
+            else if (parent.hasRightChild()){
+                if (parent.getRightChild().getData().getDataKey().compareTo(k) == 0) parent_orientation = 'R';
+            }
+            else {
+                throw new DictionaryException("Current Node is not found by its Parent Node");
+            }
+        }
+        System.out.println(parent_orientation); //test
+
+        //* 2: Rerouting Subtrees *//
+
+        if(!(current.hasLeftChild() && current.hasRightChild())){
+            // Case a: No Children -> nothing
+            if (!(current.hasLeftChild() || current.hasRightChild())) System.out.println("0 Children"); //Test
+
+            // Case b: One Child -> reroute Child to the Parent node
+            if (!(current.hasLeftChild() && current.hasRightChild())){
+                System.out.println("1 Children"); // Test
+
+                if (current.hasLeftChild()){
+                    child = current.getLeftChild();
+                    child.setParent(parent);
+                }
+                if (current.hasRightChild()){
+                    child = current.getRightChild();
+                    child.setParent(parent);
+                }
+            }
+        }
+
+        // Case c: Two Children -> reroute Subtrees by the successor of its root node
+
+        // The leftmost leaf of a subtree may have a right node
+        // Copy successor to node, then delete successor.
+        if (current.hasLeftChild() && current.hasRightChild()){
+            System.out.println("2 Children"); // Test
+
+            // For a node with two Subtrees, its successor is at the leftmost leaf of the Right Subtree
+            Node leftmostRight = current.getLeftChild();
+            while (leftmostRight.hasRightChild()){
+                leftmostRight = leftmostRight.getRightChild();
+            }
+
+            // If a Right Child exists, do a Case 1 reroute to the Parent's Left Child
+            if (leftmostRight.hasRightChild()){
+                Node sucRightChild = leftmostRight.getRightChild();
+                Node sucParent = leftmostRight.getParent();
+                sucRightChild.setParent(sucParent);
+                sucParent.setLeftChild(sucRightChild);
+            }
+
+            // Finally, replace the position of the current node and Successor node
+            child = leftmostRight;
+            child.setLeftChild(current.getLeftChild());
+            child.setRightChild(current.getRightChild());
+        }
+
+        //* 3: Delete the current Node by changing its reference in the Parent node *//
+        if (parent_orientation == 'L'){
+            parent.setLeftChild(child);
+        }
+        if (parent_orientation == 'R'){
+            parent.setRightChild(child);
+        }
+
+        // This is not working?
+        /* if (parent_orientation == '0'){ // Special case: deleting the root Node
+            if(child==null) System.out.println("child is Null");
+            this.root = child;
+        }*/
     }
 
     /**
@@ -175,8 +258,6 @@ public class OrderedDictionary implements OrderedDictionaryADT {
 
             } //when we exit the while loop, it means that we have found a node, who is a left child, meaning its parent is its successor
             return current.getData();
-
-
         }
         else{throw new DictionaryException("No other successor");} //if we get here, it means there was no successor,
     }
