@@ -242,11 +242,11 @@ public class OrderedDictionary implements OrderedDictionaryADT {
             return current.getData(); //this is the successor, return the data
 
         }
-        else if( current.getData().getDataKey().compareTo(k) >= 0) //if the node has no right child determine if itself is a R or L child
+        else if(current.getParent().getData().getDataKey().compareTo(k) >= 0) //if the node has no right child determine if itself is a R or L child
         { //if in here, this means that current is a left child, so its successor is its parent
             return current.getParent().getData();
         }
-        else if(current.getData().getDataKey().compareTo(k) <= 0)//if not then current is a right child
+        else if(current.getParent().getData().getDataKey().compareTo(k) <= 0)//if not then current is a right child
         {//since its a right child, go up to its parent, go back up the parents, the first node that is a right child, is the successor
 
             LastKey=current.getData().getDataKey();
@@ -286,11 +286,11 @@ public class OrderedDictionary implements OrderedDictionaryADT {
             return current.getData(); //this is the predacessor, return the data
 
         }
-        else if( current.getData().getDataKey().compareTo(k) <= 0) //if the node has no left child determine if itself is a R or L child
+        else if( current.getParent().getData().getDataKey().compareTo(k) <= 0) //if the node has no left child determine if itself is a R or L child
         { //if in here, this means that current is a right child, so its predacessor is its parent
             return current.getParent().getData();
         }
-        else if(current.getData().getDataKey().compareTo(k) >= 0)//if not then current is a left child
+        else if(current.getParent().getData().getDataKey().compareTo(k) >= 0)//if not then current is a left child
         {//since its a left child, go up to its parent, go back up the parents, the first node that is a left child, is the predacessor
 
             LastKey=current.getData().getDataKey();
