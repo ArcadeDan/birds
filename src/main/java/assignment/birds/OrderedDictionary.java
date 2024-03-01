@@ -107,7 +107,7 @@ public class OrderedDictionary implements OrderedDictionaryADT {
                 }
 
             }
-            System.out.println("depth");
+            System.out.println(r.getDataKey().getBirdName() + " : " + r.getDataKey().getBirdSize());
             current_node = new Node(r, null, null);
 
             // adjust parents and children
